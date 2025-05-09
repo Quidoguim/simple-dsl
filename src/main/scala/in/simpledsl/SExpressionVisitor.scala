@@ -16,6 +16,7 @@ class SExpressionVisitor extends sexpressionBaseVisitor[SExpression] {
         case "*" => MultiplyExpr(null, null)
         case "/" => DivideExpr(null, null)
         case "sphere-volume" => SphereVolumeExpr(null)
+        case "square" => SquareExpr(null)
         case x => throw new UnsupportedOperationException(s"Operator $x is not supported")
       }
     } else if(ctx.STRING() != null) {
@@ -51,8 +52,11 @@ class SExpressionVisitor extends sexpressionBaseVisitor[SExpression] {
         val radius = visit(ctx.item(1))
         SphereVolumeExpr(radius)
       }
+      case _: SquareExpr => {
+        val inner = visit(ctx.item(1))
+        SquareExpr(inner)
+      }
     }
   }
-
   override def aggregateResult(aggregate: SExpression, nextResult: SExpression): SExpression = Option(nextResult).getOrElse(aggregate)
 }
